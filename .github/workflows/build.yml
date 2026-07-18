@@ -5,21 +5,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
+          
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-      - name: Build Debug APK
-        run: |
-          echo "sdk.dir=$ANDROID_HOME" > local.properties
-          gradle wrapper --gradle-version 8.5 --distribution-type all
-          chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace
+        
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: 8.5
+          arguments: assembleDebug
+          
       - name: Upload APK
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: Study-Companion-APK
